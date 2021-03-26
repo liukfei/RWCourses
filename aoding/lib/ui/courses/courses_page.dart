@@ -1,3 +1,4 @@
+import 'package:aoding/repository/course_repository.dart';
 import 'package:aoding/ui/courses/courses_control.dart';
 import 'package:flutter/material.dart';
 import '../../constants.dart';
@@ -9,17 +10,21 @@ class CoursesPage extends StatefulWidget {
 }
 
 class _CoursesPageState extends State<CoursesPage> {
-
-  final _control = CoursesControl();
+  final _control = CoursesControl(CourseRepository());
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<List<Course>>(future: _control.fetchCourses(Constants.allFilter), builder: (context, snapshot) {
+    return FutureBuilder<List<Course>>(
+      future: _control.fetchCourses(Constants.allFilter),
+      builder: (context, snapshot) {
         var courses = snapshot.data;
         if (null == courses) {
-          return Center(child: CircularProgressIndicator(),);
+          return Center(
+            child: CircularProgressIndicator(),
+          );
         }
-        return Text('Courses');
-    },);
+        return Text(courses.toString());
+      },
+    );
   }
 }
