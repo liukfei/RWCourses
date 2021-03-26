@@ -52,10 +52,14 @@ class _CoursesPageState extends State<CoursesPage> {
           overflow: TextOverflow.ellipsis,
           style: TextStyle(fontSize: 14.0),
         ),
-        trailing: ClipRRect(
-          borderRadius: BorderRadius.circular(8.0),
-          child: Image.network(
-            course.artworkUrl,
+        trailing: Hero(
+          tag: "cardArtwork-${course.courseId}",
+          transitionOnUserGestures: true,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(8.0),
+            child: Image.network(
+              course.artworkUrl,
+            ),
           ),
         ),
         onTap: () {
