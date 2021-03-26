@@ -1,9 +1,8 @@
 import 'package:aoding/repository/course_repository.dart';
+import 'package:aoding/state/filter_state_container.dart';
 import 'package:aoding/ui/course_detail/course_detail_page.dart';
 import 'package:aoding/ui/courses/courses_control.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import '../../constants.dart';
 import '../../model/course.dart';
 
 class CoursesPage extends StatefulWidget {
@@ -13,29 +12,22 @@ class CoursesPage extends StatefulWidget {
 
 class _CoursesPageState extends State<CoursesPage> {
   final _control = CoursesControl(CourseRepository());
-  int _filter = Constants.allFilter;
+  FilterState state;
 
   @override
-  void initState() {
-    super.initState();
-
-    _loadValue();
-  }
-
-  _loadValue() async {
-    final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      _filter = prefs.getInt(Constants.filterKey);
-    });
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    state = FilterStateContainer.of(context);
   }
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<Course>>(
-      future: _control.fetchCourses(_filter),
+      future: _control.fetchCourses(state.filter),
       builder: (context, snapshot) {
         var courses = snapshot.data;
-        if (null == courses) {
+        if (null == courses ||
+            snapshot.connectionState != ConnectionState.done) {
           return Center(
             child: CircularProgressIndicator(),
           );
